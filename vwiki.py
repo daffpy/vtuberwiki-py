@@ -25,10 +25,6 @@ async def AsyncFetchWiki(vtuber :str,auto_correct :bool = False):
             'action':'query',
             'titles':vtuber,
             "format":"json",
-            "prop":"revisions",
-            "rvprop":"content",
-            "rvslots":"main",
-            "formatversion":"2"
         }
         req = await session.get('https://virtualyoutuber.fandom.com/api.php',params=params)
         res = await req.json()
