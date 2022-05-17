@@ -43,7 +43,6 @@ async def AsyncFetchWiki(vtuber :str,auto_correct :bool = False):
         except KeyError:
             x = vtuber.replace(' ','_').title()
             pass
-        print(x)
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.text()
         soup = BeautifulSoup(html, 'lxml')
