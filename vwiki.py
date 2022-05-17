@@ -25,17 +25,20 @@ async def AsyncFetchWiki(vtuber :str,auto_correct :bool = False):
             'action':'query',
             'titles':vtuber,
             "format":"json",
+            "formatversion":2
         }
         req = await session.get('https://virtualyoutuber.fandom.com/api.php',params=params)
         res = await req.json()
         x=''
         try:
             fin = res["query"]["pages"][0]["missing"]
-            if fin == True:
+            if fin == True or fin == '':
                 if auto_correct is False:
-                    return "No wiki"
+                    return f'No wiki results for Vtuber "{vtuber}"'
                 elif auto_correct is True:
                     res = await AsyncSearch(vtuber=vtuber)
+                    if res == []:
+                        return f'No wiki results for Vtuber "{vtuber}"' 
                     if res[0].startswith('List') is False:
                         x = res[0].replace(' ','_').title()
                     else:
@@ -102,6 +105,7 @@ async def AsyncFetchWiki(vtuber :str,auto_correct :bool = False):
         summary= para[1].text
 
         return {
+            "vtuber":vtuber,
             "summary":summary.replace(u'\xa0',' ').strip(),
             "personality":prsn.strip(),
             "background":bg.strip(),
