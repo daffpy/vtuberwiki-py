@@ -5,6 +5,7 @@
 ## Example
 
 ### Searching for available fandom
+
 → **Asynchronous method (non-blocking)**
 
 ```py
@@ -22,6 +23,7 @@ asyncio.run(search_fandom())
 _Note: the most relevant search is usually the first index_
 
 → **Synchronous method (blocking)**
+
 ```py
 from vtuberwiki import Vwiki
 import asyncio
@@ -35,8 +37,12 @@ def main():
 main()
 ```
 
-### → Fetching data of a category from the fandom
+_Note: the most relevant search is usually the first index_
+
+### Fetching data of a category from the fandom
+
 → **Asynchronous method (non-blocking)**
+
 ```py
 from vtuberwiki import AioVwiki
 import asyncio
@@ -48,7 +54,9 @@ async def get_summary():
 
 asyncio.run(get_summary())
 ```
+
 → **Synchronous method (blocking)**
+
 ```py
 from vtuberwiki import Vwiki
 
