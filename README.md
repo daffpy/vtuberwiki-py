@@ -15,6 +15,7 @@ async def search_fandom():
 
 asyncio.run(search_fandom())
 ```
+_Note: the most relevant search is usually the first index_
 
 ### → Fetching data of a category from the fandom
 ```py
@@ -28,4 +29,3 @@ async def get_summary():
 
 asyncio.run(get_summary())
 ```
-Note: the most relevant search is usually the first index
