@@ -3,7 +3,7 @@
 
 
 ## Example
-### Searching for available fandom
+### → Searching for available fandom
 ```py
 from vwiki import AioVwiki
 import asyncio
@@ -16,7 +16,7 @@ async def search_fandom():
 asyncio.run(search_fandom())
 ```
 
-### Fetching data of a category from the fandom
+### → Fetching data of a category from the fandom
 ```py
 from vwiki import AioVwiki
 import asyncio
