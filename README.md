@@ -29,12 +29,12 @@ from vtuberwiki import Vwiki
 import asyncio
 import time
 
-def main():
+def search_fandom():
     vwiki = Vwiki()
     s = vwiki.search(vtuber="mythia batford",limit=3)
     print(s) #['Mythia Batford', 'Mythia Batford/Gallery', 'Mythia Batford/Discography']
 
-main()
+search_fandom()
 ```
 
 _Note: the most relevant search is usually the first index_
@@ -60,10 +60,10 @@ asyncio.run(get_summary())
 ```py
 from vtuberwiki import Vwiki
 
-def main():
+def get_summary():
     vwiki = Vwiki()
     s = vwiki.summary(vtuber="mythia batford",limit=3)
     print(s) #Mythia Batford (ミシア ・バットフォード) is an Indonesian female Virtual Youtuber. She uses both Indonesian and English on her stream.
 
-main()
+get_summary()
 ```
