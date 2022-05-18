@@ -2,6 +2,6 @@
 ====================================
 """
 
-from vtuberwiki_py.aiovwiki import AioVwiki
+from vtuberwiki.aiovwiki import AioVwiki
 
 __all__ = ["AioVwiki"]

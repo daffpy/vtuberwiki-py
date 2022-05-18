@@ -1,11 +1,13 @@
 # vtuberwiki-py
+
 **vtuberwiki-py** is a Python wrapper for [VirtualYoutuber](https://virtualyoutuber.fandom.com/wiki/Virtual_YouTuber_Wiki) Fandom API.
 
-
 ## Example
+
 ### → Searching for available fandom
+
 ```py
-from vwiki import AioVwiki
+from vtuberwiki import AioVwiki
 import asyncio
 
 async def search_fandom():
@@ -15,11 +17,13 @@ async def search_fandom():
 
 asyncio.run(search_fandom())
 ```
+
 _Note: the most relevant search is usually the first index_
 
 ### → Fetching data of a category from the fandom
+
 ```py
-from vwiki import AioVwiki
+from vtuberwiki import AioVwiki
 import asyncio
 
 async def get_summary():
