@@ -4,9 +4,9 @@ from typing import Optional, TypeVar, Any
 
 headers={'User-Agent':'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
 
-AioVwikiT = TypeVar("AioVwikiT", bound="AioVwiki")
+VwikiT = TypeVar("VwikiT", bound="Vwiki")
 
-class AioVwiki():
+class Vwiki():
 
     def validity_check(self,vtuber:str,auto_correct:bool): 
         params={
