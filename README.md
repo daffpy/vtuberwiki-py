@@ -5,12 +5,13 @@
 ## Example
 ### Searching for available fandom
 ```py
-import vwiki
+from vwiki import AioVwiki
 import asyncio
 
 async def main():
-    s = await vwiki.AsyncSearch(vtuber="mythia batford",limit=3)
-    print(s) #['Mythia Batford', 'Mythia Batford/Gallery', 'Mythia Batford/Discography']
+    async with AioVwiki() as aio_vwiki:
+        s = await aio_vwiki.search(vtuber="mythia batford",limit=3)
+        print(s) #['Mythia Batford', 'Mythia Batford/Gallery', 'Mythia Batford/Discography']
 
 asyncio.run(main())
 ```
