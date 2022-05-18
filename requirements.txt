@@ -2,3 +2,4 @@ lxml
 aiohttp
 beautifulsoup4
 typing
+requests
