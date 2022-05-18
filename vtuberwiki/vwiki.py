@@ -1,4 +1,4 @@
-import aiohttp
+import requests
 from bs4 import BeautifulSoup, SoupStrainer
 from typing import Optional, TypeVar, Any
 
@@ -8,33 +8,15 @@ AioVwikiT = TypeVar("AioVwikiT", bound="AioVwiki")
 
 class AioVwiki():
 
-    def __init__(self,session: Optional[aiohttp.ClientSession] = None) -> None:
-        self.session = session
-
-    async def __aenter__(self: AioVwikiT) -> AioVwikiT:
-        return self
-
-    async def __aexit__(self, *excinfo: Any) -> None:
-        await self.close()
-
-    async def close(self) -> None:
-        if self.session is not None:
-            await self.session.close()
-
-    async def _get_session(self) -> aiohttp.ClientSession:
-        if self.session is None:
-            self.session = aiohttp.ClientSession(headers=headers)
-        return self.session   
-
-    async def validity_check(self,vtuber:str,auto_correct:bool,session:aiohttp.ClientSession): 
+    def validity_check(self,vtuber:str,auto_correct:bool): 
         params={
             'action':'query',
             'titles':vtuber,
             "format":"json",
             "formatversion":2
         }
-        req = await session.get('https://virtualyoutuber.fandom.com/api.php',params=params)
-        res = await req.json()
+        req = requests.get('https://virtualyoutuber.fandom.com/api.php',params=params)
+        res = req.json()
         x=''
         try:
             fin = res["query"]["pages"][0]["missing"]
@@ -42,7 +24,7 @@ class AioVwiki():
                 if auto_correct is False:
                     return f'No wiki results for Vtuber "{vtuber}"'
                 elif auto_correct is True:
-                    res = await self.search(vtuber=vtuber)
+                    res = self.search(vtuber=vtuber)
                     if res == []:
                         return f'No wiki results for Vtuber "{vtuber}"' 
                     if res[0].startswith('List') is False:
@@ -54,8 +36,7 @@ class AioVwiki():
             pass
         return x     
 
-    async def search(self,vtuber: str,limit=10):
-        session = await self._get_session()
+    def search(self,vtuber: str,limit=10):
         params={
             'action':'query',
             'srsearch':vtuber,
@@ -63,17 +44,16 @@ class AioVwiki():
             "list":"search",
             "format":"json"
         }
-        req = await session.get(f'https://virtualyoutuber.fandom.com/api.php',params=params)
-        res = await req.json()
+        req = requests.get(f'https://virtualyoutuber.fandom.com/api.php',params=params)
+        res = req.json()
         fin = res["query"]["search"]
         result = list((object['title'] for object in fin))
         return result
 
-    async def summary(self,vtuber:str,auto_correct :bool = False):
-        session = await self._get_session()
-        x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
-        html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = await html_req.content.read()
+    def summary(self,vtuber:str,auto_correct :bool = False):
+        x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
+        html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
+        html = html_req.text()
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -85,11 +65,10 @@ class AioVwiki():
         summary = para[1].text
         return summary.strip()
 
-    async def personality(self,vtuber:str,auto_correct :bool = False):
-        session = await self._get_session()
-        x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
-        html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = await html_req.content.read()
+    def personality(self,vtuber:str,auto_correct :bool = False):
+        x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
+        html = html_req.text()
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -106,11 +85,10 @@ class AioVwiki():
                 ph = ph.find_next_sibling()
         return prsn.strip()     
 
-    async def background(self,vtuber:str,auto_correct :bool = False):
-        session = await self._get_session()
-        x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
-        html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = await html_req.content.read()
+    def background(self,vtuber:str,auto_correct :bool = False):
+        x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
+        html = html_req.text()
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -127,11 +105,10 @@ class AioVwiki():
                 ph = ph.find_next_sibling() 
         return bg.strip()     
 
-    async def trivia(self,vtuber:str,auto_correct :bool = False):
-        session = await self._get_session()
-        x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
-        html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = await html_req.content.read()
+    def trivia(self,vtuber:str,auto_correct :bool = False):
+        x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
+        html = html_req.text()
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -151,13 +128,12 @@ class AioVwiki():
             prnt = p_msc_tag.find_next_sibling().find_all('li')
             for z in prnt:
                 msc = msc + '\n' + "- " + z.text   
-        return {"name":nm,"misc":msc} 
+        return {"name":nm,"misc":msc}  
 
-    async def image_link(self,vtuber:str,auto_correct :bool = False):
-        session = await self._get_session()
-        x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
-        html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = await html_req.content.read()
+    def image_link(self,vtuber:str,auto_correct :bool = False):
+        x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
+        html = html_req.text()
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -168,11 +144,10 @@ class AioVwiki():
             img = img["src"] 
         return img 
 
-    async def all(self,vtuber :str,auto_correct :bool = False):
-        session = await self._get_session()
-        x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
-        html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = await html_req.content.read()
+    def all(self,vtuber :str,auto_correct :bool = False):
+        x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
+        html = html_req.text()
         soup = BeautifulSoup(html, 'lxml')
         body = soup.find(class_='mw-parser-output')
         img = body.find("img",class_="pi-image-thumbnail")
@@ -238,10 +213,3 @@ class AioVwiki():
             "image_link": img
 
         }
-
-
-                
-            
-
-
-
