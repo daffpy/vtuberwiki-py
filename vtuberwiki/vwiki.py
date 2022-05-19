@@ -47,18 +47,18 @@ class Vwiki():
             try:
                 fin = res["query"]["pages"][0]["missing"]
                 if fin == True or fin == '':
-                    return f'No wiki results for Vtuber "{vtuber}"'
+                    return None
             except KeyError:
                 x = vtuber.replace(' ','_').title()
                 pass
         else:
             res = self.search(vtuber=vtuber) 
             if res == []:
-                return f'No wiki results for Vtuber "{vtuber}"' 
+                return None
             if res[0].startswith('List') is False:
                 x = res[0].replace(' ','_').title()
             else:
-                return f'No wiki results for Vtuber "{vtuber}"' 
+                return None
         return x     
 
     def search(self,vtuber: str,limit=10):
@@ -77,6 +77,8 @@ class Vwiki():
 
     def summary(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"'
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
@@ -93,6 +95,8 @@ class Vwiki():
 
     def personality(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"'
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
@@ -114,6 +118,8 @@ class Vwiki():
 
     def background(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"'
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
@@ -135,6 +141,8 @@ class Vwiki():
 
     def trivia(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"'
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
@@ -161,6 +169,8 @@ class Vwiki():
 
     def image_link(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"'
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
@@ -176,6 +186,8 @@ class Vwiki():
 
     def all(self,vtuber :str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"'
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = html_req.text
         soup = BeautifulSoup(html, 'lxml')

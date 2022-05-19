@@ -64,18 +64,18 @@ class AioVwiki():
             try:
                 fin = res["query"]["pages"][0]["missing"]
                 if fin == True or fin == '':
-                    return f'No wiki results for Vtuber "{vtuber}"'
+                    return None
             except KeyError:
                 x = vtuber.replace(' ','_').title()
                 pass
         else:
             res = await self.search(vtuber=vtuber) 
             if res == []:
-                return f'No wiki results for Vtuber "{vtuber}"' 
+                return None 
             if res[0].startswith('List') is False:
                 x = res[0].replace(' ','_').title()
             else:
-                return f'No wiki results for Vtuber "{vtuber}"'   
+                return None   
         return x     
 
     async def search(self,vtuber: str,limit=10):
@@ -96,6 +96,8 @@ class AioVwiki():
     async def summary(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
         html = html.decode('utf-8')
@@ -114,6 +116,8 @@ class AioVwiki():
     async def personality(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
         html = html.decode('utf-8')
@@ -137,6 +141,8 @@ class AioVwiki():
     async def background(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
         html = html.decode('utf-8')
@@ -160,6 +166,8 @@ class AioVwiki():
     async def trivia(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
         html = html.decode('utf-8')
@@ -188,6 +196,8 @@ class AioVwiki():
     async def image_link(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
         html = html.decode('utf-8')
@@ -205,6 +215,8 @@ class AioVwiki():
     async def all(self,vtuber :str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
         html = html.decode('utf-8')
