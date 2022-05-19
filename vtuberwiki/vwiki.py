@@ -40,25 +40,25 @@ class Vwiki():
             "format":"json",
             "formatversion":2
         }
-        req = requests.get('https://virtualyoutuber.fandom.com/api.php',params=params)
-        res = req.json()
         x=''
-        try:
-            fin = res["query"]["pages"][0]["missing"]
-            if fin == True or fin == '':
-                if auto_correct is False:
+        if auto_correct is False:
+            req = requests.get('https://virtualyoutuber.fandom.com/api.php',params=params)
+            res = req.json()
+            try:
+                fin = res["query"]["pages"][0]["missing"]
+                if fin == True or fin == '':
                     return f'No wiki results for Vtuber "{vtuber}"'
-                elif auto_correct is True:
-                    res = self.search(vtuber=vtuber)
-                    if res == []:
-                        return f'No wiki results for Vtuber "{vtuber}"' 
-                    if res[0].startswith('List') is False:
-                        x = res[0].replace(' ','_').title()
-                    else:
-                        return f'No wiki results for Vtuber "{vtuber}"'  
-        except KeyError:
-            x = vtuber.replace(' ','_').title()
-            pass
+            except KeyError:
+                x = vtuber.replace(' ','_').title()
+                pass
+        else:
+            res = self.search(vtuber=vtuber) 
+            if res == []:
+                return f'No wiki results for Vtuber "{vtuber}"' 
+            if res[0].startswith('List') is False:
+                x = res[0].replace(' ','_').title()
+            else:
+                return f'No wiki results for Vtuber "{vtuber}"' 
         return x     
 
     def search(self,vtuber: str,limit=10):

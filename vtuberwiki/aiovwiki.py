@@ -57,25 +57,25 @@ class AioVwiki():
             "format":"json",
             "formatversion":2
         }
-        req = await session.get('https://virtualyoutuber.fandom.com/api.php',params=params)
-        res = await req.json()
         x=''
-        try:
-            fin = res["query"]["pages"][0]["missing"]
-            if fin == True or fin == '':
-                if auto_correct is False:
+        if auto_correct is False:
+            req = await session.get('https://virtualyoutuber.fandom.com/api.php',params=params)
+            res = await req.json()
+            try:
+                fin = res["query"]["pages"][0]["missing"]
+                if fin == True or fin == '':
                     return f'No wiki results for Vtuber "{vtuber}"'
-                elif auto_correct is True:
-                    res = await self.search(vtuber=vtuber)
-                    if res == []:
-                        return f'No wiki results for Vtuber "{vtuber}"' 
-                    if res[0].startswith('List') is False:
-                        x = res[0].replace(' ','_').title()
-                    else:
-                        return f'No wiki results for Vtuber "{vtuber}"'  
-        except KeyError:
-            x = vtuber.replace(' ','_').title()
-            pass
+            except KeyError:
+                x = vtuber.replace(' ','_').title()
+                pass
+        else:
+            res = await self.search(vtuber=vtuber) 
+            if res == []:
+                return f'No wiki results for Vtuber "{vtuber}"' 
+            if res[0].startswith('List') is False:
+                x = res[0].replace(' ','_').title()
+            else:
+                return f'No wiki results for Vtuber "{vtuber}"'   
         return x     
 
     async def search(self,vtuber: str,limit=10):
@@ -98,6 +98,7 @@ class AioVwiki():
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
+        html = html.decode('utf-8')
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -115,6 +116,7 @@ class AioVwiki():
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
+        html = html.decode('utf-8')
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -137,6 +139,7 @@ class AioVwiki():
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
+        html = html.decode('utf-8')
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -159,6 +162,7 @@ class AioVwiki():
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
+        html = html.decode('utf-8')
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -186,6 +190,7 @@ class AioVwiki():
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
+        html = html.decode('utf-8')
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
@@ -202,6 +207,7 @@ class AioVwiki():
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
+        html = html.decode('utf-8')
         soup = BeautifulSoup(html, 'lxml')
         body = soup.find(class_='mw-parser-output')
         body = await self.decompose_useless(body)
