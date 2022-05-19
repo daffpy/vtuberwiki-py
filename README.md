@@ -10,6 +10,10 @@ To install vtuberwiki-py, simply run:
 $ pip install vtuberwiki-py
 ```
 
+## Documentation
+
+You can find the documentation for vtuberwiki-py [here](https://daffa.gitbook.io/docs/).
+
 ## Example
 
 ### Searching for available fandom
@@ -74,7 +78,3 @@ def get_summary():
 
 get_summary()
 ```
-
-## Documentation
-
-You can find the documentation for vtuberwiki-py [here](https://daffa.gitbook.io/docs/).
