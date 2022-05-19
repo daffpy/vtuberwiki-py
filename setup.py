@@ -14,7 +14,7 @@ install_reqs = [
   if line.strip() != ''
 ]
 
-version = '0.0.4'
+version = '0.0.5'
 
 with open("README.md", "r", encoding="utf-8") as fh:
   long_description = fh.read()
