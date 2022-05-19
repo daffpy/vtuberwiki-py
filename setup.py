@@ -14,7 +14,7 @@ install_reqs = [
   if line.strip() != ''
 ]
 
-version = '0.0.5'
+version = '0.0.6'
 
 with open("README.md", "r", encoding="utf-8") as fh:
   long_description = fh.read()
@@ -22,8 +22,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
   name = "vtuberwiki-py",
   version = version,
-  author = "S. Daffa",
-  author_email = "satriadaffa420@gmail.com",
+  author = "Daffa",
+  author_email = "codingdaffa@gmail.com",
   description = "vtuberwiki-py is a Python wrapper for VirtualYoutuber Fandom API.",
   long_description = long_description,
   long_description_content_type='text/markdown',
