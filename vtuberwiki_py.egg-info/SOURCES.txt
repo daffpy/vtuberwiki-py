@@ -1,0 +1,10 @@
+README.md
+setup.py
+vtuberwiki/__init__.py
+vtuberwiki/aiovwiki.py
+vtuberwiki/vwiki.py
+vtuberwiki_py.egg-info/PKG-INFO
+vtuberwiki_py.egg-info/SOURCES.txt
+vtuberwiki_py.egg-info/dependency_links.txt
+vtuberwiki_py.egg-info/requires.txt
+vtuberwiki_py.egg-info/top_level.txt

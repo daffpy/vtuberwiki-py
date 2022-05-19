@@ -2,6 +2,14 @@
 
 **vtuberwiki-py** is a Python wrapper for [VirtualYoutuber](https://virtualyoutuber.fandom.com/wiki/Virtual_YouTuber_Wiki) Fandom API.
 
+## Installation
+
+To install vtuberwiki-py, simply run:
+
+```
+$ pip install vtuberwiki-py
+```
+
 ## Example
 
 ### Searching for available fandom
@@ -27,7 +35,6 @@ _Note: the most relevant search is usually the first index_
 ```py
 from vtuberwiki import Vwiki
 import asyncio
-import time
 
 def search_fandom():
     vwiki = Vwiki()
@@ -45,7 +52,6 @@ _Note: the most relevant search is usually the first index_
 
 ```py
 from vtuberwiki import AioVwiki
-import asyncio
 
 async def get_summary():
     async with AioVwiki() as aio_vwiki:
