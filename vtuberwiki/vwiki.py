@@ -7,12 +7,21 @@ headers={'User-Agent':'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.googl
 VwikiT = TypeVar("VwikiT", bound="Vwiki")
 
 class Vwiki():
+    def __init__(self):
+        self.image="None"
 
     def decompose_useless(self,body):
         infoboxes = body.find_all('aside', class_="portable-infobox")
-        infobox_content = ""
+        first_run = True
         for box in infoboxes:
-            infobox_content += box.text
+            if first_run:
+                exc = box.find('img',class_="pi-image-thumbnail")
+                if exc is None:
+                    box.decompose()
+                    first_run= False
+                    continue
+                self.image = exc["src"]
+                first_run= False
             box.decompose()
 
         toc = body.find('div', id='toc')
@@ -177,12 +186,7 @@ class Vwiki():
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
         body = self.decompose_useless(body)
-        img = body.find("img",class_="pi-image-thumbnail")
-        if img is None:
-            img = "None"
-        else:
-            img = img["src"] 
-        return img 
+        return self.image
 
     def all(self,vtuber :str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
@@ -193,11 +197,6 @@ class Vwiki():
         soup = BeautifulSoup(html, 'lxml')
         body = soup.find(class_='mw-parser-output')
         body = self.decompose_useless(body)
-        img = body.find("img",class_="pi-image-thumbnail")
-        if img is None:
-            img = "None"
-        else:
-            img = img["src"]
         person_tag = body.find("span",id="Personality")
         bg_tag = body.find("span",id="Background")
         nm_tag = body.find("span",id="Name")
@@ -253,6 +252,6 @@ class Vwiki():
             "personality":prsn.strip(),
             "background":bg.strip(),
             "trivia":{"name":nm.strip(),"misc":msc.strip()},
-            "image_link": img
+            "image_link": self.image
 
         }

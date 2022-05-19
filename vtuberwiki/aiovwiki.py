@@ -10,6 +10,7 @@ class AioVwiki():
 
     def __init__(self,session: Optional[aiohttp.ClientSession] = None) -> None:
         self.session = session
+        self.image = ""
 
     async def __aenter__(self: AioVwikiT) -> AioVwikiT:
         return self
@@ -28,9 +29,16 @@ class AioVwiki():
 
     async def decompose_useless(self,body):
         infoboxes = body.find_all('aside', class_="portable-infobox")
-        infobox_content = ""
+        first_run = True
         for box in infoboxes:
-            infobox_content += box.text
+            if first_run:
+                exc = box.find('img',class_="pi-image-thumbnail")
+                if exc is None:
+                    box.decompose()
+                    first_run= False
+                    continue
+                self.image = exc["src"]
+                first_run= False
             box.decompose()
 
         toc = body.find('div', id='toc')
@@ -205,12 +213,7 @@ class AioVwiki():
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
         body = await self.decompose_useless(body)
-        img = body.find("img",class_="pi-image-thumbnail")
-        if img is None:
-            img = "None"
-        else:
-            img = img["src"] 
-        return img 
+        return self.image 
 
     async def all(self,vtuber :str,auto_correct :bool = False):
         session = await self._get_session()
@@ -283,7 +286,7 @@ class AioVwiki():
             "personality":prsn.strip(),
             "background":bg.strip(),
             "trivia":{"name":nm.strip(),"misc":msc.strip()},
-            "image_link": img
+            "image_link": self.image
 
         }
 

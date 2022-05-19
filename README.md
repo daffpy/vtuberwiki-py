@@ -74,3 +74,7 @@ def get_summary():
 
 get_summary()
 ```
+
+## Documentation
+
+You can find the documentation for vtuberwiki-py [here](https://daffa.gitbook.io/docs/).
