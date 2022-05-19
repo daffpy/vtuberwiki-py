@@ -52,6 +52,7 @@ _Note: the most relevant search is usually the first index_
 
 ```py
 from vtuberwiki import AioVwiki
+import asyncio
 
 async def get_summary():
     async with AioVwiki() as aio_vwiki:
