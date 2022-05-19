@@ -78,10 +78,11 @@ class Vwiki():
     def summary(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = html_req.text()
+        html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
+        body = self.decompose_useless(body)
         para = body.find_all('p',recursive=False,limit=3)
         annoying_string = para[0].find('i')
         if annoying_string != None:
@@ -114,10 +115,11 @@ class Vwiki():
     def background(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = html_req.text()
+        html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
+        body = self.decompose_useless(body)
         bg_tag = body.find("span",id="Background")
         bg= "None"
         if bg_tag != None:
@@ -134,10 +136,11 @@ class Vwiki():
     def trivia(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = html_req.text()
+        html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
+        body = self.decompose_useless(body)
         msc_tag = body.find("span",id="Miscellaneous")
         nm_tag = body.find("span",id="Name")
         nm="None"
@@ -159,10 +162,11 @@ class Vwiki():
     def image_link(self,vtuber:str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = html_req.text()
+        html = html_req.text
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
+        body = self.decompose_useless(body)
         img = body.find("img",class_="pi-image-thumbnail")
         if img is None:
             img = "None"
@@ -173,9 +177,10 @@ class Vwiki():
     def all(self,vtuber :str,auto_correct :bool = False):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         html_req = requests.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
-        html = html_req.text()
+        html = html_req.text
         soup = BeautifulSoup(html, 'lxml')
         body = soup.find(class_='mw-parser-output')
+        body = self.decompose_useless(body)
         img = body.find("img",class_="pi-image-thumbnail")
         if img is None:
             img = "None"
