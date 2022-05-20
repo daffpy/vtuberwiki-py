@@ -199,7 +199,7 @@ class AioVwiki():
             prnt = p_msc_tag.find_next_sibling().find_all('li')
             for z in prnt:
                 msc = msc + '\n' + "- " + z.text   
-        return {"name":nm,"misc":msc} 
+        return {"name":(nm.strip()).splitlines(),"misc":(msc.strip()).splitlines()} 
 
     async def image_link(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
@@ -285,7 +285,7 @@ class AioVwiki():
             "summary":summary.replace(u'\xa0',' ').strip(),
             "personality":prsn.strip(),
             "background":bg.strip(),
-            "trivia":{"name":nm.strip(),"misc":msc.strip()},
+            "trivia":{"name":(nm.strip()).splitlines(),"misc":(msc.strip()).splitlines()} ,
             "image_link": self.image
 
         }
