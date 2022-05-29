@@ -1,6 +1,8 @@
 import aiohttp
 from bs4 import BeautifulSoup, SoupStrainer
+import re
 from typing import Optional, TypeVar, Any
+import string
 
 headers={'User-Agent':'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
 
@@ -74,17 +76,17 @@ class AioVwiki():
                 if fin == True or fin == '':
                     return None
             except KeyError:
-                x = vtuber.replace(' ','_').title()
+                x = string.capwords(vtuber).replace(' ','_')
                 pass
         else:
             res = await self.search(vtuber=vtuber) 
             if res == []:
                 return None 
             if res[0].startswith('List') is False:
-                x = res[0].replace(' ','_').title()
+                x = string.capwords(res[0]).replace(' ','_')
             else:
                 return None   
-        return x     
+        return x
 
     async def search(self,vtuber: str,limit=10):
         session = await self._get_session()
@@ -99,20 +101,26 @@ class AioVwiki():
         res = await req.json()
         fin = res["query"]["search"]
         result = list((object['title'] for object in fin))
-        return result
+        return result    
 
     async def summary(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        self.name = x
         if x is None:
-            return f'No wiki results for Vtuber "{vtuber}"' 
+            return "Make sure the names are correct, and use auto_correct if you haven't already"
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
         html = await html_req.content.read()
         html = html.decode('utf-8')
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
-        body = await self.decompose_useless(body)
+        img = body.find("img",class_="pi-image-thumbnail")
+        if img is None:
+            self.image = "None"
+        else:
+            self.image = img["src"]
+        #body = await self.decompose_useless(body)
         para = body.find_all('p',recursive=False,limit=3)
         annoying_string = para[0].find('i')
         if annoying_string != None:
@@ -124,6 +132,7 @@ class AioVwiki():
     async def personality(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        self.name = x
         if x is None:
             return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
@@ -132,7 +141,12 @@ class AioVwiki():
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
-        body = await self.decompose_useless(body)
+        img = body.find("img",class_="pi-image-thumbnail")
+        if img is None:
+            self.image = "None"
+        else:
+            self.image = img["src"]
+        #body = await self.decompose_useless(body)
         person_tag = body.find("span",id="Personality")
         prsn = "None"
         if person_tag != None:
@@ -144,11 +158,12 @@ class AioVwiki():
                     break
                 prsn = prsn + "\n" + ph.text
                 ph = ph.find_next_sibling()
-        return prsn.strip()     
-
-    async def background(self,vtuber:str,auto_correct :bool = False):
+        return prsn.strip()
+    
+    async def quote(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        self.name = x
         if x is None:
             return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
@@ -157,23 +172,81 @@ class AioVwiki():
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
-        body = await self.decompose_useless(body)
-        bg_tag = body.find("span",id="Background")
-        bg= "None"
-        if bg_tag != None:
-            p_bg_tag = bg_tag.parent
-            ph = p_bg_tag.find_next_sibling()
-            bg = ""
-            while True: 
-                if str(ph)[:3] != "<p>":
+        img = body.find("img",class_="pi-image-thumbnail")
+        if img is None:
+            self.image = "None"
+        else:
+            self.image = img["src"]
+        #body = await self.decompose_useless(body)
+        qts_tag = body.find("span",id="Quotes")
+        qts = "None"
+        if qts_tag != None:
+            qts=""
+            p_qts_tag = qts_tag.parent
+            prnt = p_qts_tag.find_next_sibling().find_all('li')
+            for z in prnt:
+                if z.text != '':
+                    qts = qts + '\n' + z.text
+                z.decompose()
+        if qts == "None": 
+            return qts 
+        else: 
+            return (qts.strip()).splitlines()
+    
+    async def history(self,vtuber:str,auto_correct :bool = False):
+        session = await self._get_session()
+        x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        self.name = x
+        if x is None:
+            return f'No wiki results for Vtuber "{vtuber}"' 
+        html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
+        html = await html_req.content.read()
+        html = html.decode('utf-8')
+        cls_output = SoupStrainer(class_='mw-parser-output')
+        soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
+        body = soup.find(class_='mw-parser-output')
+        img = body.find("img",class_="pi-image-thumbnail")
+        if img is None:
+            self.image = "None"
+        else:
+            self.image = img["src"]
+        #body = await self.decompose_useless(body)
+        hs_tag = body.find("span",id="History")
+        section = ''
+        res = {}
+        hs = "None"
+        first_run = True
+        if hs_tag != None:
+            hs=""
+            p_hs_tag = hs_tag.parent
+            next_node = p_hs_tag.find_next_sibling()
+            #r_next_node = p_hs_tag.find_next_sibling()
+            while True:
+                if str(next_node).startswith('<h3>'):
+                    if first_run is False:
+                        res[section] = hs
+                        hs = ''
+                        section = next_node.text
+                    else:
+                        section = next_node.text 
+                if str(next_node).startswith('<h2>'):
+                    if hs != '':
+                        res[section] = hs
                     break
-                bg = bg + "\n" + ph.text
-                ph = ph.find_next_sibling() 
-        return bg.strip()     
+  
+                if next_node.name == "p":
+                    if next_node.text != '':
+                        real_t = re.sub("\[[0-9]+\]",'',next_node.text)
+                        hs = hs + '\n' + real_t       
+                        if first_run is True:
+                            first_run = False
+                next_node = next_node.find_next_sibling()  
+        return res        
 
     async def trivia(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        self.name = x
         if x is None:
             return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
@@ -182,24 +255,43 @@ class AioVwiki():
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
-        body = await self.decompose_useless(body)
-        msc_tag = body.find("span",id="Miscellaneous")
-        nm_tag = body.find("span",id="Name")
-        nm="None"
-        msc= "None"
-        if nm_tag != None:
-            nm=""
-            p_nm_tag = nm_tag.parent
-            prnt = p_nm_tag.find_next_sibling().find_all('li')
-            for z in prnt:
-                nm = nm + '\n' + z.text
+        img = body.find("img",class_="pi-image-thumbnail")
+        if img is None:
+            self.image = "None"
+        else:
+            self.image = img["src"]
+        #body = await self.decompose_useless(body)
+        msc_tag = body.find("span",id="Trivia")
+        no_subhead = True
+        msc = "None"
         if msc_tag != None:
             msc=""
             p_msc_tag = msc_tag.parent
-            prnt = p_msc_tag.find_next_sibling().find_all('li')
-            for z in prnt:
-                msc = msc + '\n' + "- " + z.text   
-        return {"name":(nm.strip()).splitlines(),"misc":(msc.strip()).splitlines()} 
+            next_node = p_msc_tag.find_next_sibling()
+            while True:
+                if str(next_node).startswith('<ul>') and no_subhead is True:
+                    prnt = next_node.find_all('li')
+                    for z in prnt:
+                        if z.text != '':
+                            real_t = re.sub("\[[0-9]+\]",'',z.text)
+                            msc = msc + '\n' + real_t  
+                        z.decompose()  
+                    break
+                if str(next_node).startswith('<h2>'):
+                    break
+                prnt = next_node.find_next_sibling().find_all('li')
+                for z in prnt:
+                    if z.text != '':
+                        real_t = re.sub("\[[0-9]+\]",'',z.text)
+                        msc = msc + '\n' + real_t  
+                    z.decompose()
+                if no_subhead == True:    
+                    no_subhead = False
+                next_node = next_node.find_next_sibling()  
+        if msc == "None":
+            return msc
+        else:
+            return (msc.strip()).splitlines()
 
     async def image_link(self,vtuber:str,auto_correct :bool = False):
         session = await self._get_session()
@@ -212,12 +304,18 @@ class AioVwiki():
         cls_output = SoupStrainer(class_='mw-parser-output')
         soup = BeautifulSoup(html, 'lxml',parse_only=cls_output)
         body = soup.find(class_='mw-parser-output')
-        body = await self.decompose_useless(body)
-        return self.image 
+        img = body.find("img",class_="pi-image-thumbnail")
+        if img is None:
+            self.image = "None"
+        else:
+            self.image = img["src"]
+        #body = await self.decompose_useless(body)
+        return self.image         
 
     async def all(self,vtuber :str,auto_correct :bool = False):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
+        self.name = x
         if x is None:
             return f'No wiki results for Vtuber "{vtuber}"' 
         html_req = await session.get(f'https://virtualyoutuber.fandom.com/wiki/{x}')
@@ -225,20 +323,22 @@ class AioVwiki():
         html = html.decode('utf-8')
         soup = BeautifulSoup(html, 'lxml')
         body = soup.find(class_='mw-parser-output')
-        body = await self.decompose_useless(body)
+        #body = await self.decompose_useless(body)
         img = body.find("img",class_="pi-image-thumbnail")
         if img is None:
-            img = "None"
+            self.image = "None"
         else:
-            img = img["src"]
+            self.image = img["src"]
+
+        para = body.find_all('p',recursive=False,limit=3)
+        annoying_string = para[0].find('i')
+        if annoying_string != None:
+            para.pop(0)  
+
+        summary = (para[1].text).strip() 
+
         person_tag = body.find("span",id="Personality")
-        bg_tag = body.find("span",id="Background")
-        nm_tag = body.find("span",id="Name")
-        msc_tag = body.find("span",id="Miscellaneous")
         prsn = "None"
-        bg= "None"
-        nm="None"
-        msc="None"
         if person_tag != None:
             p_person_tag = person_tag.parent
             ph = p_person_tag.find_next_sibling()
@@ -249,45 +349,75 @@ class AioVwiki():
                 prsn = prsn + "\n" + ph.text
                 ph = ph.find_next_sibling()
 
-        if bg_tag != None:
-            p_bg_tag = bg_tag.parent
-            ph = p_bg_tag.find_next_sibling()
-            bg = ""
-            while True: 
-                if str(ph)[:3] != "<p>":
+        hs_tag = body.find("span",id="History")
+        section = ''
+        res = {}
+        hs = "None"
+        first_run = True
+        if hs_tag != None:
+            hs=""
+            p_hs_tag = hs_tag.parent
+            next_node = p_hs_tag.find_next_sibling()
+            #r_next_node = p_hs_tag.find_next_sibling()
+            while True:
+                if str(next_node).startswith('<h3>'):
+                    if first_run is False:
+                        res[section] = hs
+                        hs = ''
+                        section = next_node.text
+                    else:
+                        section = next_node.text 
+                if str(next_node).startswith('<h2>'):
+                    if hs != '':
+                        res[section] = hs
                     break
-                bg = bg + "\n" + ph.text
-                ph = ph.find_next_sibling() 
+  
+                if next_node.name == "p":
+                    if next_node.text != '':
+                        real_t = re.sub("\[[0-9]+\]",'',next_node.text)
+                        hs = hs + '\n' + real_t       
+                        if first_run is True:
+                            first_run = False
+                next_node = next_node.find_next_sibling()  
 
-        if nm_tag != None:
-            nm=""
-            p_nm_tag = nm_tag.parent
-            prnt = p_nm_tag.find_next_sibling().find_all('li')
-            for z in prnt:
-                nm = nm + '\n' + z.text
+
+        msc_tag = body.find("span",id="Trivia")
+        no_subhead = True
+        msc = "None"
         if msc_tag != None:
             msc=""
             p_msc_tag = msc_tag.parent
-            prnt = p_msc_tag.find_next_sibling().find_all('li')
-            for z in prnt:
-                msc = msc + '\n' + "- " + z.text        
-
-
-        para = body.find_all('p',recursive=False,limit=3)
-        annoying_string = para[0].find('i')
-        if annoying_string != None:
-            para.pop(0)  
-
-        summary= para[1].text
+            next_node = p_msc_tag.find_next_sibling()
+            while True:
+                if str(next_node).startswith('<ul>') and no_subhead is True:
+                    prnt = next_node.find_all('li')
+                    for z in prnt:
+                        if z.text != '':
+                            real_t = re.sub("\[[0-9]+\]",'',z.text)
+                            msc = msc + '\n' + real_t  
+                        z.decompose()  
+                    break
+                if str(next_node).startswith('<h2>'):
+                    break
+                prnt = next_node.find_next_sibling().find_all('li')
+                for z in prnt:
+                    if z.text != '':
+                        real_t = re.sub("\[[0-9]+\]",'',z.text)
+                        msc = msc + '\n' + real_t  
+                    z.decompose()
+                if no_subhead == True:    
+                    no_subhead = False
+                next_node = next_node.find_next_sibling()  
+        if msc != "None":
+            msc = msc.strip().splitlines()           
 
         return {
-            "vtuber":vtuber,
-            "summary":summary.replace(u'\xa0',' ').strip(),
+            "vtuber":self.name,
+            "summary":summary,
             "personality":prsn.strip(),
-            "background":bg.strip(),
-            "trivia":{"name":(nm.strip()).splitlines(),"misc":(msc.strip()).splitlines()} ,
+            "history":res,
+            "trivia":msc,
             "image_link": self.image
-
         }
 
 
