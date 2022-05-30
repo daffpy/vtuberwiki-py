@@ -103,7 +103,7 @@ class AioVwiki():
         result = list((object['title'] for object in fin))
         return result    
 
-    async def summary(self,vtuber:str,auto_correct :bool = False):
+    async def summary(self,vtuber:str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         self.name = x
@@ -129,7 +129,7 @@ class AioVwiki():
         summary = para[1].text
         return summary.strip()
 
-    async def personality(self,vtuber:str,auto_correct :bool = False):
+    async def personality(self,vtuber:str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         self.name = x
@@ -160,7 +160,7 @@ class AioVwiki():
                 ph = ph.find_next_sibling()
         return prsn.strip()
     
-    async def quote(self,vtuber:str,auto_correct :bool = False):
+    async def quote(self,vtuber:str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         self.name = x
@@ -186,14 +186,15 @@ class AioVwiki():
             prnt = p_qts_tag.find_next_sibling().find_all('li')
             for z in prnt:
                 if z.text != '':
-                    qts = qts + '\n' + z.text
+                    real_t = re.sub("\[[0-9]+\]",'',z.text)
+                    qts = qts + '\n' + real_t
                 z.decompose()
         if qts == "None": 
             return qts 
         else: 
             return (qts.strip()).splitlines()
     
-    async def history(self,vtuber:str,auto_correct :bool = False):
+    async def history(self,vtuber:str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         self.name = x
@@ -243,7 +244,7 @@ class AioVwiki():
                 next_node = next_node.find_next_sibling()  
         return res        
 
-    async def trivia(self,vtuber:str,auto_correct :bool = False):
+    async def trivia(self,vtuber:str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         self.name = x
@@ -293,7 +294,7 @@ class AioVwiki():
         else:
             return (msc.strip()).splitlines()
 
-    async def image_link(self,vtuber:str,auto_correct :bool = False):
+    async def image_link(self,vtuber:str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         if x is None:
@@ -312,7 +313,7 @@ class AioVwiki():
         #body = await self.decompose_useless(body)
         return self.image         
 
-    async def all(self,vtuber :str,auto_correct :bool = False):
+    async def all(self,vtuber :str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         self.name = x

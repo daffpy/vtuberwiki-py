@@ -86,7 +86,7 @@ class Vwiki():
         result = list((object['title'] for object in fin))
         return result
 
-    def summary(self,vtuber:str,auto_correct :bool = False):
+    def summary(self,vtuber:str,auto_correct :bool = True):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         self.name = x
         if x is None:
@@ -110,7 +110,7 @@ class Vwiki():
         summary = para[1].text
         return summary.strip()
 
-    def personality(self,vtuber:str,auto_correct :bool = False):
+    def personality(self,vtuber:str,auto_correct :bool = True):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         self.name = x
         if x is None:
@@ -139,7 +139,7 @@ class Vwiki():
                 ph = ph.find_next_sibling()
         return prsn.strip()   
 
-    async def quote(self,vtuber:str,auto_correct :bool = False):
+    async def quote(self,vtuber:str,auto_correct :bool = True):
         session = await self._get_session()
         x = await self.validity_check(vtuber=vtuber,auto_correct=auto_correct,session=session)
         self.name = x
@@ -172,7 +172,7 @@ class Vwiki():
         else: 
             return (qts.strip()).splitlines()     
 
-    def history(self,vtuber:str,auto_correct :bool = False):
+    def history(self,vtuber:str,auto_correct :bool = True):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         self.name = x
         if x is None:
@@ -220,7 +220,7 @@ class Vwiki():
                 next_node = next_node.find_next_sibling()  
         return res     
 
-    def trivia(self,vtuber:str,auto_correct :bool = False):
+    def trivia(self,vtuber:str,auto_correct :bool = True):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         self.name = x
         if x is None:
@@ -268,7 +268,7 @@ class Vwiki():
         else:
             return (msc.strip()).splitlines() 
 
-    def image_link(self,vtuber:str,auto_correct :bool = False):
+    def image_link(self,vtuber:str,auto_correct :bool = True):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         self.name = x
         if x is None:
@@ -286,7 +286,7 @@ class Vwiki():
         #body = await self.decompose_useless(body)
         return self.image 
 
-    def all(self,vtuber :str,auto_correct :bool = False):
+    def all(self,vtuber :str,auto_correct :bool = True):
         x = self.validity_check(vtuber=vtuber,auto_correct=auto_correct)
         self.name = x
         if x is None:

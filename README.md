@@ -1,6 +1,8 @@
 # vtuberwiki-py
 
-**vtuberwiki-py** is a Python wrapper for [VirtualYoutuber](https://virtualyoutuber.fandom.com/wiki/Virtual_YouTuber_Wiki) Fandom API.
+**vtuberwiki-py** is a Python library wrapper for [VirtualYoutuber](https://virtualyoutuber.fandom.com/wiki/Virtual_YouTuber_Wiki) Fandom API.
+
+This package supports both Asynchronous (async/non-blocking) and Synchronous (sync/blocking) programming.
 
 ## Installation
 
@@ -10,15 +12,25 @@ To install vtuberwiki-py, simply run:
 $ pip install vtuberwiki-py
 ```
 
+## Breaking Changes
+
+- to increase ease of use, `auto_correct` parameter will now defaults to `True`
+- `trivia()` now returns a `List`
+- removing `misc` and `name` key from dict, so `trivia()` will now fetch all of the trivia without classifying the segment
+- `background()` method is now changed into `history()`
+- adding a new `quote()` method to fetch vtuber's quotes
+- `quote()` method returns a `List`
+- now you can get the name & image of a Vtuber by calling the `.name` and `.image` Class property
+
+to understand more please read vtuberwiki-py documentations, thanks.
+
 ## Documentation
 
-You can find the documentation for vtuberwiki-py [here](https://daffa.gitbook.io/docs/).
+You can find the full documentation and example for vtuberwiki-py [here](https://daffa.gitbook.io/docs/).
 
-## Example
+## Examples
 
-### Searching for available fandom
-
-→ **Asynchronous method (non-blocking)**
+→ Asynchronous (non-blocking)
 
 ```py
 from vtuberwiki import AioVwiki
@@ -26,55 +38,37 @@ import asyncio
 
 async def search_fandom():
     async with AioVwiki() as aio_vwiki:
-        s = await aio_vwiki.search(vtuber="mythia batford",limit=3)
-        print(s) #['Mythia Batford', 'Mythia Batford/Gallery', 'Mythia Batford/Discography']
+        await aio_vwiki.search(vtuber="mythia batford",limit=3)
+        # ['Mythia Batford', 'Mythia Batford/Gallery', 'Mythia Batford/Discography']
+        await aio_vwiki.summary(vtuber="mythia batford",auto_correct=True)
+        # Mythia Batford (ミシア ・バットフォード) is an Indonesian female Virtual Youtuber. She uses both Indonesian and English on her stream.
 
 asyncio.run(search_fandom())
 ```
 
-_Note: the most relevant search is usually the first index_
-
-→ **Synchronous method (blocking)**
+→ Synchronous (blocking)
 
 ```py
 from vtuberwiki import Vwiki
-import asyncio
 
 def search_fandom():
     vwiki = Vwiki()
-    s = vwiki.search(vtuber="mythia batford",limit=3)
-    print(s) #['Mythia Batford', 'Mythia Batford/Gallery', 'Mythia Batford/Discography']
+    vwiki.search(vtuber="mythia batford",limit=3)
+    # ['Mythia Batford', 'Mythia Batford/Gallery', 'Mythia Batford/Discography']
+    vwiki.summary(vtuber="mythia batford",auto_correct=True)
+    # Mythia Batford (ミシア ・バットフォード) is an Indonesian female Virtual Youtuber. She uses both Indonesian and English on her stream.
 
 search_fandom()
 ```
 
-_Note: the most relevant search is usually the first index_
+## License
 
-### Fetching data of a category from the fandom
+MIT licensed. See the [LICENSE file](https://github.com/daffpy/vtuberwiki-py/blob/master/LICENSE) for full details.
 
-→ **Asynchronous method (non-blocking)**
+## Credits
 
-```py
-from vtuberwiki import AioVwiki
-import asyncio
+- [fandom-py](https://github.com/NikolajDanger/fandom-py) by @NikolajDanger for inspiration and Mediawiki api usage
 
-async def get_summary():
-    async with AioVwiki() as aio_vwiki:
-        s = await aio_vwiki.summary(vtuber="mythia batford",auto_correct=True)
-        print(s) #Mythia Batford (ミシア ・バットフォード) is an Indonesian female Virtual Youtuber. She uses both Indonesian and English on her stream.
-
-asyncio.run(get_summary())
 ```
 
-→ **Synchronous method (blocking)**
-
-```py
-from vtuberwiki import Vwiki
-
-def get_summary():
-    vwiki = Vwiki()
-    s = vwiki.summary(vtuber="mythia batford",limit=3)
-    print(s) #Mythia Batford (ミシア ・バットフォード) is an Indonesian female Virtual Youtuber. She uses both Indonesian and English on her stream.
-
-get_summary()
 ```
