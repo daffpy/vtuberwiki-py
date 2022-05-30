@@ -68,7 +68,3 @@ MIT licensed. See the [LICENSE file](https://github.com/daffpy/vtuberwiki-py/blo
 ## Credits
 
 - [fandom-py](https://github.com/NikolajDanger/fandom-py) by @NikolajDanger for inspiration and Mediawiki api usage
-
-```
-
-```
