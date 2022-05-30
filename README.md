@@ -26,7 +26,7 @@ to understand more please read vtuberwiki-py documentations, thanks.
 
 ## Documentation
 
-You can find the full documentation and example for vtuberwiki-py [here](https://daffa.gitbook.io/docs/).
+You can find the full documentation and example for vtuberwiki-py [here](https://vtuberwiki.daffak.xyz).
 
 ## Examples
 
