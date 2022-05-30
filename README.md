@@ -63,7 +63,7 @@ search_fandom()
 
 ## License
 
-MIT licensed. See the [LICENSE file](https://github.com/daffpy/vtuberwiki-py/blob/master/LICENSE) for full details.
+MIT licensed. See the [LICENSE file](https://github.com/daffpy/vtuberwiki-py/blob/main/LICENSE) for full details.
 
 ## Credits
 
