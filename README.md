@@ -1,4 +1,6 @@
 # vtuberwiki-py
+![](https://img.shields.io/pypi/v/vtuberwiki-py.svg?style=for-the-badge&logo=pypi&color=yellowgreen&logoColor=white)
+![](https://img.shields.io/pypi/dm/vtuberwiki-py?color=blueviolet&logo=pypi&logoColor=white&style=for-the-badge)
 
 **vtuberwiki-py** is a Python library wrapper for [VirtualYoutuber](https://virtualyoutuber.fandom.com/wiki/Virtual_YouTuber_Wiki) Fandom API.
 
