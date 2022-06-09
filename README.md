@@ -16,6 +16,7 @@ $ pip install vtuberwiki-py
 
 ## Breaking Changes
 
+Here is some of the breaking changes for `vtuberwiki-py 0.1.7` :
 - to increase ease of use, `auto_correct` parameter will now defaults to `True`
 - `trivia()` now returns a `List`
 - removing `misc` and `name` key from dict, so `trivia()` will now fetch all of the trivia without classifying the segment
