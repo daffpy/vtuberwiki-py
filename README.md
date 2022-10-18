@@ -65,10 +65,6 @@ def search_fandom():
 search_fandom()
 ```
 
-## License
-
-MIT licensed. See the [LICENSE file](https://github.com/daffpy/vtuberwiki-py/blob/main/LICENSE) for full details.
-
 ## Credits
 
 - Special thanks to MediaWiki API and Fandom for making this project possible
