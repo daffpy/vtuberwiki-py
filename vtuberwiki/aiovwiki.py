@@ -63,7 +63,7 @@ class AioVwiki:
   ):
     params = 
     x = ""
-    if auto_correct is False:
+    if not auto_correct:
       req = await self.session.get(
         "https://virtualyoutuber.fandom.com/api.php", params={
         "action": "query",
@@ -84,7 +84,7 @@ class AioVwiki:
     else:
       res = await self.search(vtuber=vtuber)
       
-      if res and res[0].startswith("List") is False:
+      if res and not res[0].startswith("List"):
         x = string.capwords(res[0]).replace(" ", "_")
       else:
         return None
@@ -238,7 +238,7 @@ class AioVwiki:
       
       while True:
         if str(next_node).startswith("<h3>"):
-          if first_run is False:
+          if not first_run:
             res[section] = hs
             hs = ""
           
@@ -381,13 +381,12 @@ class AioVwiki:
       
       while True:
         if str(next_node).startswith("<h3>"):
-          if first_run is False:
+          if not first_run:
             res[section] = hs
             hs = ""
           
           section = next_node.text
-        
-        if str(next_node).startswith("<h2>"):
+        elif str(next_node).startswith("<h2>"):
           if hs:
             res[section] = hs
           
