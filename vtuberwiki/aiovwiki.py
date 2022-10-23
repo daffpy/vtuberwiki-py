@@ -201,7 +201,7 @@ class AioVwiki:
         z.decompose()
     
     # qts.strip() :^)
-    return qts if qts == "None" else (qts.strip()).splitlines()
+    return qts if qts == "None" else qts.strip().splitlines()
 
   async def history(self, vtuber: str, auto_correct: bool = True):
     x = await self.validity_check(
@@ -309,7 +309,7 @@ class AioVwiki:
           no_subhead = False
         next_node = next_node.find_next_sibling()
     
-    return msc if msc == "None" else (msc.strip()).splitlines()
+    return msc if msc == "None" else msc.strip().splitlines()
 
   async def image_link(self, vtuber: str, auto_correct: bool = True):
     x = await self.validity_check(
