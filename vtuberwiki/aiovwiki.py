@@ -31,13 +31,12 @@ class AioVwiki:
     first_run = True
     for box in infoboxes:
       if first_run:
+        first_run = False
         exc = box.find("img", class_="pi-image-thumbnail")
         if exc is None:
           box.decompose()
-          first_run = False
           continue
         self.image = exc["src"]
-        first_run = False
       box.decompose()
 
     toc = body.find("div", id="toc")
@@ -111,7 +110,7 @@ class AioVwiki:
     self.name = x
     
     if x is None:
-      return "Make sure the names are correct, and use auto_correct if you haven't already"
+      raise Exception("Make sure the names are correct, and use auto_correct if you haven't already")
     
     html_req = await self.session.get(f"https://virtualyoutuber.fandom.com/wiki/{x}")
     html = (await html_req.content.read()).decode("utf-8")
@@ -140,7 +139,7 @@ class AioVwiki:
     self.name = x
     
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html_req = await self.session.get(f"https://virtualyoutuber.fandom.com/wiki/{x}")
     html = (await html_req.content.read()).decode("utf-8")
@@ -161,7 +160,7 @@ class AioVwiki:
       ph = person_tag.parent.find_next_sibling()
       prsn = ""
       while str(ph)[:3] == "<p>":
-        prsn = prsn + "\n" + ph.text
+        prsn += "\n" + ph.text
         ph = ph.find_next_sibling()
     
     return prsn.strip()
@@ -173,7 +172,7 @@ class AioVwiki:
     
     self.name = x
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html_req = await self.session.get(f"https://virtualyoutuber.fandom.com/wiki/{x}")
     html = (await html_req.content.read()).decode("utf-8")
@@ -197,7 +196,7 @@ class AioVwiki:
       for z in prnt:
         if z.text != "":
           real_t = re.sub("\[[0-9]+\]", "", z.text)
-          qts = qts + "\n" + real_t
+          qts += "\n" + real_t
         z.decompose()
     
     # qts.strip() :^)
@@ -210,7 +209,7 @@ class AioVwiki:
     
     self.name = x
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html_req = await self.session.get(f"https://virtualyoutuber.fandom.com/wiki/{x}")
     html = (await html_req.content.read()).decode("utf-8")
@@ -243,8 +242,7 @@ class AioVwiki:
             hs = ""
           
           section = next_node.text
-        
-        if str(next_node).startswith("<h2>"):
+        elif str(next_node).startswith("<h2>"):
           if hs:
             res[section] = hs
           
@@ -266,7 +264,7 @@ class AioVwiki:
     )
     self.name = x
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html_req = await self.session.get(f"https://virtualyoutuber.fandom.com/wiki/{x}")
     html = (await html_req.content.read()).decode("utf-8")
@@ -301,7 +299,7 @@ class AioVwiki:
           break
         prnt = next_node.find_next_sibling().find_all("li")
         for z in prnt:
-          if z.text != "":
+          if z.text:
             real_t = re.sub("\[[0-9]+\]", "", z.text)
             msc += "\n" + real_t
           z.decompose()
@@ -317,7 +315,7 @@ class AioVwiki:
     )
     
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html_req = await self.session.get(f"https://virtualyoutuber.fandom.com/wiki/{x}")
     html = (await html_req.content.read()).decode("utf-8")
@@ -338,7 +336,7 @@ class AioVwiki:
     )
     self.name = x
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html_req = await self.session.get(f"https://virtualyoutuber.fandom.com/wiki/{x}")
     html = (await html_req.content.read()).decode("utf-8")
@@ -355,7 +353,7 @@ class AioVwiki:
     if annoying_string is not None:
       para.pop(0)
 
-    summary = (para[1].text).strip()
+    summary = para[1].text.strip()
 
     person_tag = body.find("span", id="Personality")
     prsn = "None"
@@ -412,7 +410,7 @@ class AioVwiki:
         if str(next_node).startswith("<ul>") and no_subhead:
           prnt = next_node.find_all("li")
           for z in prnt:
-            if z.text != "":
+            if z.text:
               real_t = re.sub("\[[0-9]+\]", "", z.text)
               msc += "\n" + real_t
             z.decompose()
