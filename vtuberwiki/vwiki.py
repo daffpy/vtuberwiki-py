@@ -93,7 +93,7 @@ class Vwiki:
     self.name = x
     
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html = requests.get(f"https://virtualyoutuber.fandom.com/wiki/{x}").text
 
@@ -117,7 +117,7 @@ class Vwiki:
     x = self.validity_check(vtuber=vtuber, auto_correct=auto_correct)
     self.name = x
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html = requests.get(f"https://virtualyoutuber.fandom.com/wiki/{x}").text
     
@@ -149,7 +149,7 @@ class Vwiki:
     self.name = x
     
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html = requests.get(f"https://virtualyoutuber.fandom.com/wiki/{x}").text
 
@@ -178,7 +178,7 @@ class Vwiki:
     x = self.validity_check(vtuber=vtuber, auto_correct=auto_correct)
     self.name = x
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html = requests.get(f"https://virtualyoutuber.fandom.com/wiki/{x}").text
 
@@ -226,7 +226,7 @@ class Vwiki:
     self.name = x
     
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     html = requests.get(f"https://virtualyoutuber.fandom.com/wiki/{x}").text
 
     cls_output = SoupStrainer(class_="mw-parser-output")
@@ -272,7 +272,7 @@ class Vwiki:
     self.name = x
     
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html = requests.get(f"https://virtualyoutuber.fandom.com/wiki/{x}").text
 
@@ -291,7 +291,7 @@ class Vwiki:
     self.name = x
     
     if x is None:
-      return f'No wiki results for Vtuber "{vtuber}"'
+      raise Exception(f'No wiki results for Vtuber "{vtuber}"')
     
     html = requests.get(f"https://virtualyoutuber.fandom.com/wiki/{x}").text
 
