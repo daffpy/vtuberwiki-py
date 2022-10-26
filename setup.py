@@ -2,7 +2,6 @@ import codecs
 import os
 import setuptools
 
-
 def local_file(file):
   return codecs.open(
     os.path.join(os.path.dirname(__file__), file), 'r', 'utf-8'
@@ -11,7 +10,7 @@ def local_file(file):
 install_reqs = [
   line.strip()
   for line in local_file('requirements.txt').readlines()
-  if line.strip() != ''
+  if line.strip()
 ]
 
 version = '0.1.8'
